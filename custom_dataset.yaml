@@ -1,0 +1,14 @@
+names:
+- car
+- truck
+- bus
+- special_vehicle
+- motorcycle
+- bicycle
+- pedestrian
+- traffic_sign
+- traffic_light
+nc: 9
+test: C:\Users\admin\Desktop\wooil\Hyper\2D Bounding Box\test
+train: C:\Users\admin\Desktop\wooil\Hyper\2D Bounding Box\training
+val: C:\Users\admin\Desktop\wooil\Hyper\2D Bounding Box\validation
