@@ -1,14 +1,18 @@
-names:
-- car
-- truck
-- bus
-- special_vehicle
-- motorcycle
-- bicycle
-- pedestrian
-- traffic_sign
-- traffic_light
+'names': ['car', 'truck','bus','special_vehicle', 'motorcycle', 'bicycle','pedestrian', 'traffic_sign', 'traffic_light']
+class_mapping : {
+     0 : 'car',
+     1 : 'truck',
+     2 : 'bus',
+     3 : 'special vehicle',
+     4 : 'motorcycle',
+     5 : 'bicycle',
+     6 : 'pedestrian',
+     7 : 'traffic_sign',
+     8 : 'traffic_light'
+}
+
 nc: 9
-test: C:\Users\admin\Desktop\wooil\Hyper\2D Bounding Box\test
-train: C:\Users\admin\Desktop\wooil\Hyper\2D Bounding Box\training
-val: C:\Users\admin\Desktop\wooil\Hyper\2D Bounding Box\validation
+
+test: C:\Users\admin\Desktop\wooil\Hyper\2D Bounding Box\test\images
+train: C:\Users\admin\Desktop\wooil\Hyper\2D_Bounding_Box\2D Bounding Box\training\images
+val: C:\Users\admin\Desktop\wooil\Hyper\2D_Bounding_Box\2D Bounding Box\validation\images
