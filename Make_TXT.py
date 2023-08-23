@@ -1,8 +1,17 @@
 import os
 import json
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+from torchvision.models.detection import fasterrcnn_resnet50_fpn
+from torch.utils.data import DataLoader
+from torchvision.transforms import functional as F
+from torchvision.io import read_image
+from torchvision.transforms import functional as F
+from torchvision.transforms import functional_pil as FP
+import torch
 
 # JSON 파일들이 있는 디렉토리 경로
-json_dir = "C:\\Users\\admin\\Desktop\\wooil\\Hyper\\2D_Bounding_Box\\2D Bounding Box\\training\\labels"
+json_dir = "C:\\Users\\admin\\Desktop\\wooil\\Hyper\\2D_Bounding_Box\\2D_Bounding_Box1\\training\\labels"
 
 class_mapping = {
    'car' : 0,
@@ -19,15 +28,31 @@ class_mapping = {
 
 # YOLO 포맷으로 변환하는 함수
 def convert_to_yolo_format(annotation, image_resolution):
+
     label = annotation["Label"]
     class_idx = class_mapping.get(label, -1)  # 클래스가 없을 경우 -1을 반환
     if class_idx == -1:
         return ""  # 매핑되지 않은 클래스는 빈 문자열 반환
-    x_center = annotation["Coordinate"][0] / image_resolution[0]
-    y_center = annotation["Coordinate"][1] / image_resolution[1]
-    width = annotation["Coordinate"][2] / image_resolution[0]
-    height = annotation["Coordinate"][3] / image_resolution[1]
+    coordinate = annotation["Coordinate"]
+    x_center = (coordinate[0] + coordinate[2]/2)/image_resolution[0]
+    y_center = (coordinate[1] + coordinate[3]/2)/image_resolution[1]
+    width = coordinate[2]/image_resolution[0]
+    height = coordinate[3]/ image_resolution[1]
+
+
     return f"{class_idx} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}"
+def get_transform():
+    return A.Compose([
+        A.HorizontalFlip(p=0.5),
+        A.VerticalFlip(p=0.5),
+        ToTensorV2(),
+    ])
+
+model = fasterrcnn_resnet50_fpn(pretrained=True)
+model.roi_heads.box_predictor.cls_score.out_features = len(class_mapping)
+model.roi_heads.box_predictor.bbox_pred.out_features = len(class_mapping)
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+model.to(device)
 
 
 # JSON 파일들을 처리
