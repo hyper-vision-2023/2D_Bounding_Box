@@ -1,22 +1,106 @@
-# 📦 2D Bounding Box 객체 탐지 데이터셋 전처리 및 YOLO 포맷 변환
+# 📦 Object detection with 2D Bounding Box (YOLO)
 
-본 프로젝트는 주어진 JSON 포맷의 라벨 데이터를 **YOLO 형식**으로 변환하고, 객체 탐지 모델 학습을 위한 환경을 구축하기 위한 파이프라인입니다.  
-학습, 검증 및 테스트 데이터를 YOLO 형식으로 자동 변환하고, `train.txt`, `val.txt`, `.yaml` 구성 파일을 생성하여 학습에 바로 활용할 수 있습니다.
+This project provides a complete pipeline to convert annotation data in JSON format into the **YOLO format** for object detection tasks. It automatically processes training, validation, and test datasets, creates `train.txt` and `valid.txt` image lists, and generates a `custom_dataset.yaml` configuration file for YOLO training.
 
 ---
 
+## 📁 Directory Structure Example
 
+```
+2D_Bounding_Box/
+├── training/
+│   ├── images/
+│   └── labels/         # JSON label files
+├── validation/
+│   ├── images/
+│   └── labels/
+├── test/
+│   ├── images/
+│   └── labels/
+```
 
-## ✅ 주요 기능
+---
 
-### 📄 1. 이미지 경로 목록 생성
-- `glob`을 통해 학습/검증 이미지 파일 경로를 수집
-- `train.txt`, `valid.txt`로 저장
+## ✅ Main Features
 
-### 🔄 2. JSON ➝ YOLO 포맷 변환
-- 주어진 JSON 파일에서 객체 정보(`Label`, `Coordinate`)를 불러와 YOLO 형식으로 변환
-- 변환된 라벨을 `.txt` 파일로 저장
+### 📄 1. Image Path List Generation
+- Uses `glob` to collect training and validation image file paths
+- Saves them as `train.txt` and `valid.txt` for YOLO training
 
-```text
-YOLO 포맷: <class_id> <x_center> <y_center> <width> <height>
+### 🔄 2. JSON ➝ YOLO Format Conversion
+- Extracts `Label` and `Coordinate` info from JSON files
+- Converts each annotation to YOLO format:
 
+```
+YOLO Format: <class_id> <x_center> <y_center> <width> <height>
+```
+
+- Saves converted annotations to `.txt` files
+
+### 🧭 3. Class Mapping and YAML Configuration File Creation
+- Generates `custom_dataset.yaml` with class names and paths to image lists
+
+```yaml
+nc: 9
+names: ["car", "truck", "bus", "special_vehicle", "motorcycle", "bicycle", "pedestrian", "traffic_sign", "traffic_light"]
+train: path_to_train.txt
+val: path_to_valid.txt
+```
+
+### 📊 4. Data Augmentation using Albumentations
+- Horizontal and vertical flips are applied for data augmentation using Albumentations
+
+---
+
+## 🔧 Requirements
+
+- Python 3.8+
+- PyTorch
+- Albumentations
+- TorchVision
+- PyYAML
+
+```bash
+pip install torch torchvision albumentations pyyaml
+```
+
+---
+
+## 📌 Class Mapping
+
+| Class ID | Class Name        |
+|----------|-------------------|
+| 0        | car               |
+| 1        | truck             |
+| 2        | bus               |
+| 3        | special vehicle   |
+| 4        | motorcycle        |
+| 5        | bicycle           |
+| 6        | pedestrian        |
+| 7        | traffic_sign      |
+| 8        | traffic_light     |
+
+---
+
+## 🗂️ Output Files
+
+| File                          | Description                           |
+|-------------------------------|---------------------------------------|
+| `train.txt`, `valid.txt`      | Lists of image file paths             |
+| `custom_dataset.yaml`         | YOLO configuration file               |
+| `.txt` (YOLO labels)          | Annotation files in YOLO format       |
+
+---
+
+## 🚀 Future Enhancements
+
+- Add bounding box visualization tool
+- Add label validation utilities (e.g., invalid box checker)
+- Automate training script generation for YOLOv5/YOLOv8
+
+---
+
+## 📝 References
+
+- [Albumentations Documentation](https://albumentations.ai/)
+- [YOLO Format Guide - Ultralytics](https://docs.ultralytics.com/datasets/detect/#format)
